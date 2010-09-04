@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C/DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title>Job Application</title>
+		<link rel="stylesheet" type="text/css" media="all" href="style.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="style" />
+		<script type="text/javascript" src="flapjax/flapjax.js"></script>
+		<script type="text/javascript" src="flapjax/json.js"></script>
+		<script type="text/javascript" src="flapjax/plug.js"></script>
+		<script type="text/javascript" src="flapjax/myfjws.js"></script>
+		<script type="text/javascript" src="common.js"></script>
+		<script type="text/javascript" src="gcommon.js"></script>
+<script type="text/javascript" src="cookies.js"></script>
+		<script type="text/javascript">
+
+function displayPositions(basicInfo) {
+  for (var ix = 0; ix < basicInfo.positions.length; ix++) {
+    $('position').appendChild(OPTION({ value: basicInfo.positions[ix].id },
+                                     basicInfo.positions[ix].name));
+  };
+  $('positionBlock').style.display = 'block';
+};
+    
+
+function loader() {
+	var flapjax = flapjaxInit();
+	var exceptsE = captureServerExcepts(); 
+
+	var onLoadTimeE = receiver_e();
+
+	var basicInfoE = getBasicInfoE(onLoadTimeE);
+	basicInfoE.lift_e(function(bi) { 
+    setHeadAndTitle(bi,'Create Account'); 
+    displayPositions(bi);
+  });
+	
+  var veri = $URL('verify');
+
+	
+	var attemptsE = extractEvent_e('vfy','click').transform_e(function(_) {
+		var uname = $('uname').value;
+		var password = $('password').value;
+
+		var repassword = $('repassword').value;
+
+    if ($('position').value == "nothing") {
+      return { error: 'Please choose the position you are applying for.' };
+    };
+
+    if (!$('firstname').value) {
+     return { error: 'Please enter your first name.' };
+    }
+  
+    if (!$('lastname').value) {
+      return { error: 'Please enter your last name.' };
+    }
+
+		if(password != repassword) {
+			return { error: 'You retyped your password incorrectly. Please '
+    }                  + 're-enter it.'};
+    
+		
+	return genRequest({
+		url:'UnverifiedUser/newApplicant',
+		fields: {
+      username:uname,
+      password:password,
+      verify:veri,
+      firstname: $('firstname').value,
+      lastname: $('lastname').value,
+		  gender:$('gender').value,
+		  position: parseInt($('position').value),
+		  ethnicity:$('ethnicity').value}
+    });
+	});
+
+	var resultsE = getFilteredWSO_e(attemptsE.filter_e(noErrors));
+
+	var cookieE = getFilteredWSO_e(resultsE.filter_e(noErrors).transform_e(function(_) {
+			return genRequest(
+				{url:'Auth/getCookie',
+				fields:{username:$('uname').value,password:$('password').value},
+		         asynchronous: false});
+			}));
+	cookieE.filter_e(function(c) {return c;}).transform_e(function(c) {
+    setCookie('resumesession',2,c[0]); 
+  
+		if(c[1].role == 'applicant')
+			window.location = 'applicant.html';
+		else
+			window.location = 'reviewer.html';
+	});
+				
+	insertDomE(merge_e(attemptsE,resultsE).filter_e(onlyErrors).transform_e(resultTrans('')),'errortext');
+
+	onLoadTimeE.sendEvent('loaded!');
+}
+		</script>
+	</head>
+
+<body onload="loader();">
+
+<h1 id="ptitle">Brown Computer Science Department</h1>
+<div id="main">
+<h2>create account<div class="sub">enter account information</div></h2>
+
+<p id="errortext"></p>
+
+<h3>Name</h3>
+
+<table class="input-table" align="center">
+<tr><th>first name</th><th>last name</th></tr>
+<tr>
+<td><input id="firstname" type="text"/></td>
+<td><input id="lastname" type="text"/></td>
+</tr>
+</table>
+
+<div id="vsi">
+<h3>Voluntary Self-Identification</h3>
+
+<p>To assist us in processing your application, you may, if you wish, indicate
+your gender and ethnicity below. Providing this information is voluntary; your
+application will be handled identically whether you provide this information or
+not.</p>
+
+<table class="input-table" align="center">
+
+<tr><th>gender</th><th>ethnicity</th></tr>
+
+<tr>
+
+<td>
+<select id="gender">
+<option value="Unknown" selected>I Choose Not to Indicate my Gender</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+</select>
+</td>
+
+<td>
+<select id="ethnicity">
+<option value="zu" selected>I Choose Not to Indicate my Ethnicity</option>
+<option value="am">American Indian or Alaskan Native</option>
+<option value="as">Asian or Pacific Islander</option>
+<option value="b">Black, non-Hispanic</option>
+<option value="h">Hispanic</option>
+<option value="w">White, non-Hispanic</option>
+<option value="zo">Other</option>
+</select>
+</td>
+
+</tr>
+
+</table></div> <!-- vsi -->
+
+<div id="positionBlock">
+<h3>Position</h3>
+<p>Please select the position you are applying for (not the position you 
+currently hold).</p>
+<table class="input-table" align="center">
+<tr><td>
+<select id="position">
+<option value="nothing">Select a position</option>
+<!-- filled in dynamically --> 
+</select>
+</td></tr>
+</table>
+</div>
+
+<h3>Username and Password</h3>
+
+<p>Please create a new username and password, which you will then use to login
+to Resume.</p>
+
+<table class="input-table" align="center">
+<tr><th>username</th><th>password</th><th>re-type password</th></tr>
+<tr>
+<td><input type="text" id="uname"></input></td>
+<td><input type="password" id="password"></input></td>
+<td><input type="password" id="repassword"></input></td>
+</tr>
+</table>
+
+<p style="text-align: center; margin: 0; padding: 1em;">
+<input value="Create Account" id="vfy" type="button"/>
+</p>
+
+<div class="bottom">Resume is written in <a
+href="http://www.flapjax-lang.org">Flapjax</a>. Questions? Comments? <a
+href="contact.html">Contact Us.</a></div>
+
+</body>
+</html>

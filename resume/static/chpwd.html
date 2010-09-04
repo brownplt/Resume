@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C/DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title>Job Application</title>
+		<link rel="stylesheet" type="text/css" media="all" href="style.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="style" />
+		<script type="text/javascript" src="flapjax/flapjax.js"></script>
+		<script type="text/javascript" src="flapjax/json.js"></script>
+		<script type="text/javascript" src="flapjax/plug.js"></script>
+		<script type="text/javascript" src="flapjax/myfjws.js"></script>
+		<script type="text/javascript" src="common.js"></script>
+		<script type="text/javascript" src="gcommon.js"></script>
+<script type="text/javascript" src="cookies.js"></script>
+		<script type="text/javascript">
+			function loader() {
+				var flapjax = flapjaxInit();
+				var exceptsE = captureServerExcepts(); 
+
+				var onLoadTimeE = receiver_e();
+
+				var basicInfoE = getBasicInfoE(onLoadTimeE);
+				basicInfoE.transform_e(function(bi) {setHeadAndTitle(bi,'Create Password');});
+				var veri = $URL('verify');
+				var uid = $URL('uid');
+
+				var infoE = getFilteredWSO_e(onLoadTimeE.constant_e(genRequest({
+					url:'AuthInfo/getFromVfy',
+					fields:{id:uid,verify:veri}})));
+
+				var attemptsE = extractEvent_e('vfy','click').transform_e(function(_) {
+					var password = $('password').value;
+					var repassword = $('repassword').value;
+
+					if(password != repassword)
+						return {error:'You retyped your password incorrectly. Please re-enter it.'};
+					else
+						return genRequest({
+							url:'AuthInfo/changePassword',
+							fields:{id:uid,password:password,verify:veri}});
+				});
+
+				var resultsE = getFilteredWSO_e(attemptsE.filter_e(noErrors));
+
+				var cookieE = getFilteredWSO_e(resultsE.filter_e(noErrors).transform_e(function(_) {
+						return genRequest(
+							{url:'Auth/getCookie',
+							fields:{username:_.username,password:$('password').value},
+							asynchronous: false});
+						}));
+				cookieE.filter_e(function(c) {return c;}).transform_e(function(c) {
+          setCookie('resumesession',2,c[0]); 
+					if(c[1].role == 'applicant')
+						window.location = 'applicant.html';
+					else
+						window.location = 'reviewer.html';
+				});
+
+				insertDomE(infoE.transform_e(function(_) {return STRONG(_.username);}),'uname');
+				insertDomE(merge_e(attemptsE,resultsE,infoE).filter_e(onlyErrors).transform_e(resultTrans('')),'errortext');
+
+				insertDomE(getFilteredWSO_e(extractEvent_e('cancreq','click').constant_e(
+								genRequest(
+									{url:'AuthInfo/cancelChange',
+									fields:{id:$URL('uid'),verify:$URL('verify')}}))).constant_e(
+									   P({className:'feedback-success'},'Your request has been cancelled. Please ',A({href:'login.html'},'login here'),' to access your account.'))
+							,'reqdo');
+				onLoadTimeE.sendEvent('loaded!');
+			}
+		</script>
+	</head>
+	<body onload="loader();">
+	    <h1 id="ptitle">Brown Computer Science Department</h1>
+	    <div id="main">
+	    <h2>create account<div class="sub">enter account information</div></h2>
+		<p id="errortext"></p>
+		<h3>Enter Password</h3>
+		<p>Please create a new password. Once you press &quot;OK&quot;, you will be logged in automatically. If you do not want to change your password, <a href="javascript:undefined" id="cancreq">cancel this request</a>.</p>
+		<div id="reqdo">
+	    <table class="input-table" align="center">
+		<tr><th>username</th><th>password</th><th>re-type password</th></tr>
+		<tr><td><span id="uname"></td>
+		    <td><input type="password" id="password"></input></td>
+		    <td><input type="password" id="repassword"></input></td>
+		</tr>
+	    </table>
+		<p style="text-align: center; margin: 0; padding: 1em;"><input value="OK" id="vfy" type="button"/></p>
+	</div>
+	</div>
+	    <div class="bottom">Resume is written in <a href="http://www.flapjax-lang.org">Flapjax</a>. Questions? Comments? <a href="contact.html">Contact Us.</a></div>
+	</body>
+</html>
