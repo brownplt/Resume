@@ -33,7 +33,7 @@ function makeLetterTable(basicInfo,appInfo) {
 			new TextInputWidget('',40),
 			new TextInputWidget('',20)],
 			function(name,inst,email) {return [TD(name),TD(inst),TD(email)];})
-	    .withButton(new ButtonWidget(appInfo.position.autoemail ? 'Request New' : 'Enter Reference'),function(ci,btn) {return [TR(ci,TD(btn))];})
+	    .withButton(new ButtonWidget(appInfo.position.autoemail ? 'Add Reference' : 'Enter Reference'),function(ci,btn) {return [TR(ci,TD(btn))];})
 		.serverSaving(function(val) {
 			return genRequest(
 				{url:'Submitter/requestReference',
