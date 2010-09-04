@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C/DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title>Job Application</title>
+		<link rel="stylesheet" type="text/css" media="all" href="style.css" />
+		<!--[if IE]>
+		<link rel="stylesheet" type="text/css" media="all" href="styleie.css" />
+		<![endif]-->
+		<link rel="stylesheet" type="text/css" media="all" href="style" />
+<script type="text/javascript" src="prototype.js"></script>
+		<script type="text/javascript" src="flapjax/flapjax.js"></script>
+		<script type="text/javascript" src="flapjax/json.js"></script>
+		<script type="text/javascript" src="flapjax/plug.js"></script>
+		<script type="text/javascript" src="flapjax/myfjws.js"></script>
+		<script type="text/javascript" src="common.js"></script>
+		<script type="text/javascript" src="gcommon.js"></script>
+<script type="text/javascript" src="cookies.js"></script>
+		<script type="text/javascript">
+		    function enters_e(dom) {
+			return extractEvent_e(dom,'keypress').filter_e(function(e) {return e.keyCode == 13;});
+		    }
+		    function loader() {
+			var flapjax = flapjaxInit();
+			var exceptsE = captureServerExcepts(); 
+			
+			document.startDemo = function(cb) { };
+
+			var onLoadTimeE = receiver_e();
+
+			var basicInfoE = getBasicInfoE(onLoadTimeE);
+			basicInfoE.transform_e(function(bi) {setHeadAndTitle(bi,'Login')});
+			var cookieE = iframeLoad_e('litarget');
+			cookieE.filter_e(function(c) {return c;}).transform_e(function(c) {
+        setCookie('resumesession',2,c[0]); 
+				if(c[1].role == 'applicant')
+					window.location = 'applicant.html';
+				else
+					window.location = 'reviewer.html';
+			});
+			reqAcctE = getFilteredWSO_e(snapshot_e(
+				merge_e(extractEvent_e('req-button','click'),enters_e('req-email')),
+				lift_b(function(email) {
+				    return genRequest(
+					{url: 'UnverifiedUser/add',
+					fields:{name:name,email:email}});
+			    },$B('req-email'))));
+
+			reqLtrsE = getFilteredWSO_e(snapshot_e(
+				merge_e(extractEvent_e('ltr-button','click'),enters_e('ltr-email')),
+				$B('ltr-email').transform_b(function(email) {
+				    return genRequest(
+					{url: 'Reference/getList',
+					fields:{email:email}});
+			})));
+
+			insertDomE(reqLtrsE.transform_e(resultTrans('Your email has been sent.')),'referror');
+			insertDomE(reqAcctE.transform_e(resultTrans('Thank you for requesting your account! You will receive an email shortly.')),'req-2')
+				
+			insertDomB(cookieE.filter_e(function(c) {return !c;}).constant_e(
+				    P({className:'error'},'Login failed. Please try again.')).startsWith($URL('expired')?
+				    P({className:'error'},'Your session has expired. Please login again.') : SPAN()),'logerror');
+
+			showResetB = extractEvent_e('reset-toggle','click').collect_e(false,function(v,acc) {return !acc;}).startsWith(false);
+			insertValueB(showResetB.transform_b(function(_) {return _ ? 'block' : 'none';}),'reset-info','style','display');
+			reqResetE = getFilteredWSO_e(snapshot_e(
+				merge_e(extractEvent_e('reset-button','click'),enters_e('reset-email')),
+				$B('reset-email').transform_b(function(email) {
+					return genRequest(
+						{url: 'AuthInfo/resetPassword',
+						fields:{email:email}});
+			})));
+			insertDomE(reqResetE.transform_e(resultTrans('You will receive an email with your account information shortly.')),'reset-blurb');
+
+			if($URL('logout')) {
+				getFilteredWSO_e(onLoadTimeE.constant_e(genRequest({url:'Auth/logOut',fields:{cookie:$URL('logout')}})));
+			}
+			if($URL('expired')) $('expired').style.display='block';
+			onLoadTimeE.sendEvent('Loaded!');
+		    }
+
+		window.setTimeout(loader,0); // window.onload problems on  Safari 3.1.2
+		</script>
+
+	</head>
+	<body>
+
+		<h1 id="ptitle"></h1>
+		<div class="content">
+		<div class="left-part">
+			<h2>letter writers<div class="sub">upload</div></h2>
+			<p>Please enter your email below. You will be emailed a list of the letters you have been asked to write,
+			and given instructions on how to proceed.</p>
+			<p id="referror"></p>
+			<table class="input-table">
+				<tr><th>email</th></tr>
+				<tr><td><input type="text" id="ltr-email" /></td></tr>
+				<tr><td class="buttons"><input id="ltr-button" type="button" value="OK" /></td></tr>
+			</table>
+		</div>
+		<div class="right-part">
+			<h2>existing user<div class="sub">login</div></h2>
+			<span id="logerror"></span>
+			<form action="Auth/getCookie" target="litarget" method="post">
+			<table class="input-table">
+				<tr><th>username</th><th>password</th></tr>
+				<tr><td><input type="text" name="username" /></td><td><input type="password" name="password" /></td></tr>
+				<tr><td colspan=2 class="buttons"><input id="login-button" type="submit" value="Login" /></td></tr>
+			    </table>
+			</form>
+			<p><a id="reset-toggle" href="javascript:undefined">(forgot username or password?)</a></p>
+			<div id="reset-info">
+				<p id="reset-blurb">If you forgot your username or password, enter your email below. You will
+				receive your username and a link that will allow you to enter a new password.</p>
+			<table class="input-table">
+				<tr><th>email</th></tr>
+				<tr><td><input type="text" id="reset-email" /></td></tr>
+				<tr><td class="buttons"><input id="reset-button" type="button" value="OK" /></td></tr>
+			</table>
+			</div>
+			    <p><em>Reviewers:</em> new to Resume? try the <a href="/loaddemo.html">interactive tour</a>.</p>
+			<h2>applicants<div class="sub">request account</div></h2>
+			<p>If you already have an account, please login above. Otherwise, please enter your
+			email address below, then click the &quot;OK&quot; button.
+			An email will be sent to the address you provide telling you how to proceed.
+			</p>
+			<span id="req-2"></span>
+			<table class="input-table">
+				<tr><th>email</th></tr>
+				<tr><td><input type="text" id="req-email" /></td></tr>
+				<tr><td colspan=2 class="buttons"><input id="req-button" type="button" value="OK" /></td></tr>
+			</table>
+		</div>
+	</div>
+	<div class="bottom">Resume is written in <a href="http://www.flapjax-lang.org">Flapjax</a>. Questions? Comments? <a href="contact.html">Contact Us.</a></div>
+	<iframe style="display: none;" id="litarget" name="litarget" src="/blank.html"></iframe>
+	</body>
+</html>

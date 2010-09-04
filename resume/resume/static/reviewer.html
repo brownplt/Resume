@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C/DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title>Job Application</title>
+		<link rel="stylesheet" type="text/css" media="all" href="style.css" />
+		<!--[if IE]>
+		<link rel="stylesheet" type="text/css" media="all" href="styleie.css" />
+		<![endif]-->
+		<link rel="stylesheet" type="text/css" media="all" href="style" />
+<script type="text/javascript" src="prototype.js"></script>
+		<script type="text/javascript" src="flapjax/flapjax.js"></script>
+		<script type="text/javascript" src="flapjax/json.js"></script>
+		<script type="text/javascript" src="flapjax/plug.js"></script>
+		<script type="text/javascript" src="flapjax/myfjws.js"></script>
+<script type="text/javascript" src="cookies.js"></script>
+		<script type="text/javascript" src="common.js"></script>
+		<script type="text/javascript" src="gcommon.js"></script>
+		<script type="text/javascript" src="reviewer.js"></script>
+	</head>
+
+<body onload="loader();">
+<h1 id="ptitle"></h1>
+
+<div id="atbl" style="display: none;">
+
+<div class="applicant-list">
+
+<fieldset class="list-filter">
+<legend>
+<a id="toggleFilters" href="javascript:undefined">Filter Applicants</a>
+</legend>
+
+<div id="allFilters" style="display: none">
+
+<div><span id="nameFilterLabel">Name: </span>
+<input id="nameFilter" type="text" size="20"/></div>
+
+<div id="filterArea">
+<div id="filterAreaCheckboxes"> <!-- Areas filled in here --></div>
+<div>
+<input type="radio" name="areaFilterType" checked="true" id="af_any"
+       value="any">
+Match Any Selected Area
+</input>
+<input type="radio" name="areaFilterType" id="af_all" value="all">
+Match All Selected Areas
+</input>
+</div>
+</div> <!-- filterArea -->
+
+<div id="filterReviewSection">Application has 
+<select id="filterReviewType">
+<option selected value="none">(select one)</option>
+<option value="comment">comments</option>
+<option value="review">reviews</option>
+<option value="noreview">no reviews</option>
+</select> 
+by <input type="text" id ="filterReviewer" size="20" value="me"></input>.
+</div> <!-- filterReviewSection -->
+
+<div id="letterFilterSection">
+Application has letters by 
+<input id="letterFilter" type="text" size="20"></input>.
+</div>
+
+<div id="filterNumReviewsSection">
+Application has fewer than <input type="text" size="5" id="filterReviewLimit">
+reviews.
+</div>
+
+<div id="filterNumLettersSection">
+Application has at least <input type="text" size="5" id="filterLetterLimit"> 
+letters of reference.
+</div>
+
+<fieldset class="list-filter">
+<legend>
+Additional Filters
+</legend>
+
+<div id="filterScore"></div>
+
+</fieldset>
+
+
+<div>
+<input type="checkbox" id="filterTS">
+With Teaching Statement
+</input>
+<input type="checkbox" id="filterCL">
+With Cover Letter
+</input>
+<input type="checkbox" id="filterCV">
+With Curriculum Vitae
+</input>
+<input type="checkbox" id="filterRS">
+With Research Statement
+</input>
+</div>
+
+<div>
+<input type="checkbox" id="filterHidden">
+Show Hidden Applicants
+</input>
+<input type="checkbox" id="filterRejected">
+Show Rejected Applicants
+</input>
+</div>
+
+</div> <!-- allFilters -->
+
+</fieldset>
+</div>
+
+</div> <!-- atbl -->
+
+<div id="loading" style="display: block; background: #fff; padding: 2em;">
+<em>Loading. Please wait...</em>
+</div>
+
+<div class="bottom">Resume is written in 
+<a href="http://www.flapjax-lang.org">Flapjax</a>. Questions? Comments? 
+<a href="contact.html">Contact Us.</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+Hardware Requirements
+---------------------
+
++ Linux-capable system with at least 256 MB RAM.
++ Sufficient disk space for letters that are uploaded by users.
+
+Software Requirements
+---------------------
+
++ Python 2.4.4 (Python 2.5 does _not_ work)
+  * python-SQLObject==0.7.1
+  * python-cjson (i686-Linux binary included)
+  * python-mysqldb
++ Apache 2
+  * mod_python
++ MySQL
++ An SMTP / SSMTP server (Resume makes heavy use of email)
++ anti-word (Resume converts uploaded .doc files into .pdf files.)
++ tex.  On Debian, install the package tetex-extra in addition to tetex.
+  (Consolidated reviews are formatted using TeX.)
++ pdftk>=1.41 (Used for PDF magic.)
++ TexML: http://getfo.org/texml/index.html
+
+Installation
+------------
+
+Modify resume/config.py as appropriate
+
+cd resume && ./install.py initdb
+cd resume && ./install.py create
+
+Add resume.conf to apache2/sites-enabled, after appropriate modifications.
+
+Ensure that resume/logs and resume/uploads are writable by www-data.
+
+Create the files resume/logs/resume.log and resume/logs/email.log.
+Make them writable by www-data.
+
+Make the resume/ directory writable by www-data (so that compiled .pyc files
+can be created by mod_python).
+
+Testing
+-------
+
+If you do not receive any Python errors during 'initdb' and 'create', the MySQL
+and Python requirements were met.
+
+If you see the front page (default: localhost/brownhort) and login to the
+administrator's account, the Apache requirements were met.
+
+If you create a new account and receive email from Resume, the email system
+is correctly configured.
+
+If you can work through the interactive tour, Resume works with your browser.
+
+Backup Data
+-----------
+
+You should setup your system to backup data that's uploaded to Resume.
+Important pieces include:
+
++ The SQL database.  See resume/config.py for the name of the database.  The
+  default name is 'resume'.
++ Uploaded content.  The default directory is 'uploads/'.
+
+Misc
+----
+
+The "interactive tour" creates a complete new department, so it takes some time
+to load.  The demo page (static-base/loaddemo.html) prints "this is taking
+really long, please contact the sysadmin" after 15 seconds.  You may want to
+tweak the timeout based on your server's performance.
