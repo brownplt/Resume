@@ -39,6 +39,17 @@ Make them writable by www-data.
 Make the resume/ directory writable by www-data (so that compiled .pyc files
 can be created by mod_python).
 
+Database Setup
+--------------
+
+By default, resume stores data in a MySQL database.  Configuration instructions follow:
+
+$ sudo -s
+# mysql
+mysql> CREATE USER 'resume'@'localhost' IDENTIFIED BY 'resume';
+mysql> CREATE DATABASE resume;
+mysql> GRANT ALL ON resume.* TO 'resume'@'localhost';
+
 Testing
 -------
 

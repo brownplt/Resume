@@ -4,6 +4,12 @@ ServerAdmin webmaster@localhost
 
 DocumentRoot /home/resume/resume/resume
 
+# You may wish to redirect the server-root to a department.  For example,
+# the following redirects "/" to "/browncs".  This is particularly convenient
+# when your server hosts a single department.
+#
+# RedirectMatch ^/$ http://facsearch.cs.brown.edu/cs/
+
 <Directory />
 Options FollowSymLinks
 AllowOverride None
