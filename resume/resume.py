@@ -713,7 +713,7 @@ class Applicant(SQLObject,SqlJson):
 			raise ResumeException('No institution was provided, please provide a name for the institution')
 		if email == '':
 			raise ResumeException('No email was provided, please provide an email for the reference request')
-		Ncode = random.randint(0,999999999)
+		ncode = random.randint(0,999999999)
 		ref = Reference(code = ncode,applicant = self,submitted=0,filesize=0,
 			name=name,institution=institution,email=email,department=self.department)
 		self.department.updateLastChange(self)
