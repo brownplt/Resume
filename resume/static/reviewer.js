@@ -188,7 +188,7 @@ var standardCols = [
 						A({href:'http://images.google.com/images?q='+encodeURI('"'+a.info.name+'"')},
 							IMG({className:'icon',src:'images/imagesearch.png',alt:'Image Search'})),
 						map(function(wc) {
-							return SPAN('[',A({href:showWebsite(wc.value)},wc.name),']',' ');
+							return SPAN('[',A({href:showWebsite(wc.value), target: "_blank" },wc.name),']',' ');
 						},a.info.web)));
 		}),
   makeColumn('info-col','Position',

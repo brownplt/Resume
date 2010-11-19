@@ -211,7 +211,7 @@ function loader() {
 	
 	var contRowsB = appCompsB.transform_b(function(comps) {
 		return map(function(cinfo) {
-		    return TR(TH(cinfo.name+':'),TD((cinfo.type == 'contactweb' && cinfo.value) ? A({href:showWebsite(cinfo.value)},cinfo.value) : cinfo.value));
+		    return TR(TH(cinfo.name+':'),TD((cinfo.type == 'contactweb' && cinfo.value) ? A({href:showWebsite(cinfo.value), "target": "_blank" },cinfo.value) : cinfo.value));
 		    },comps.contact);});
 	var emailCellB = applicantB.transform_b(function(ai) {
 			    return TD(ai.email,A({href:'mailto:'+ai.email},' ',IMG({className:'icon',src:'images/envelope.png',alt:'Send Mail'})));
