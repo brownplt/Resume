@@ -482,7 +482,13 @@ function areaFilter(basicInfo) {
     setCookie('areaFilterType',30,
       $$('input:checked[type="radio"][name="areaFilterType"]').pluck('value'));
 
-    if (areas.length == 0) {
+    if (type == 'none') {
+      document.notifyDemo({ action: "areachange" });
+      return function(applicant) {
+        return applicant.info.areas.length == 0;
+      };
+    }
+    else if (areas.length == 0) {
       return filterNone;
     }
     else if (type == 'any') {
