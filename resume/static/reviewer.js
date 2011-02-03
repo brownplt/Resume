@@ -730,7 +730,7 @@ function makeFilterClause(basicInfo,reviewer,baseFilter) {
         SELECT(OPTION({ value: "none" }, "(select one)"),
                OPTION({ value: 'Male' }, "Male"),
                OPTION({ value: 'Female' }, "Female"),
-               OPTION({ value: 'Unspecified' }, "Unspecified"));
+               OPTION({ value: 'Unknown' }, "Unknown"));
 
       return {
         domB: SPANB("is ",genderSelect),
